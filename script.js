@@ -8,10 +8,9 @@ const textBox = document.getElementById('text-box');
 
 // Dark or Light Styles
 function toggleMode(theme) {
-	const white = '255 255 255';
-	const black = '0 0 0';
-	nav.style.backgroundColor = `rgb(${theme === 'dark' ? black : white} / 50%)`;
-	textBox.style.backgroundColor = `rgb(${theme === 'dark' ? white : black} / 50%)`;
+	const isDark = theme === 'dark';
+	nav.style.backgroundColor = isDark ? 'rgb(0 0 0 / 50%)' : 'rgb(255 255 255 / 50%)';
+	textBox.style.backgroundColor = isDark ? 'rgb(255 255 255 / 50%)' : 'rgb(0 0 0 / 50%)';
 	toggleIcon.children[0].textContent = `${theme[0].toUpperCase() + theme.slice(1)} Mode`;
 	toggleIcon.children[1].classList.replace(
 		`fa-${theme === 'dark' ? 'sun' : 'moon'}`,
@@ -26,8 +25,17 @@ function toggleMode(theme) {
 function switchTheme(event) {
 	const theme = event.target.checked ? 'dark' : 'light';
 	document.documentElement.setAttribute('data-theme', theme);
+	localStorage.setItem('theme', theme);
 	toggleMode(theme);
 }
 
 // Event Listener
 toggleSwitch.addEventListener('change', switchTheme);
+
+// Check Local Storage for Theme
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme) {
+	document.documentElement.setAttribute('data-theme', currentTheme);
+	if (currentTheme === 'dark') toggleSwitch.checked = true;
+	toggleMode(currentTheme);
+}
